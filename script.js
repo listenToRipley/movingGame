@@ -43,30 +43,14 @@ class GameCharacter {
   }
 
 let pieces = [
-  new GameCharacter (50, 50, width, width, "#a6dc28", 2),
+  new GameCharacter (75, 50, width, width, "#a6dc28", 2),
   new GameCharacter ((screenWidth/2)-25, screenHeight-150, width, width, "#a6dc28", 1),
   new GameCharacter ((screenWidth-100), 50, width, width, "#a6dc28", 3),
   ]
 
-let player = new GameCharacter(15, 225, 25, 25, "#bb4c63", 0)
+let player = new GameCharacter(15, 225, 15, 15, "#bb4c63", 0)
 
-let goal = new GameCharacter((screenWidth-25), (screenHeight/2)-40, width, width, "#2cedcb", 0)
-
-let sprites = {};
-
-let loadSpirtes = () => {
-  sprites.player = new Image();
-  sprites.player.scr='./images/hero.png'
-
-  sprites.background = new Image();
-  sprites.background.src = 'images/floor.png';
-
-  sprites.pieces = new Image();
-  sprites.pieces.src = 'images/enemy.png'
-
-  sprites.goal = new Image();
-  sprites.goal.src = 'images/chest.png'
-}
+let goal = new GameCharacter((screenWidth-25), 225, width, width, "#2cedcb", 0)
 
 //key down and key up, think of booleans. 
 //click events for movement
@@ -114,9 +98,39 @@ let collisions = (rect1, rect2) => {
   };
 } 
 
+let sprites = {};
+
 let draw = () => {
   //clear the canvas
   ctx.clearRect(0,0, screenWidth, screenHeight);
+
+  sprites.background = new Image();
+  sprites.background.addEventListener('load', () => {
+    ctx.drawImage(sprites.background, 0, 0);
+  })
+  sprites.background.src= 'images/floor.png';
+
+
+    sprites.player = new Image();
+    sprites.player.addEventListener('load', () => {
+      ctx.drawImage(sprites.player, player.x, player.y);
+    }, false)
+    sprites.player.src='./images/hero.png'
+  
+    sprites.pieces = new Image();
+    sprites.pieces.addEventListener('load', () => {
+      pieces.forEach((element) => {
+        ctx.drawImage(sprites.pieces, element.x, element.y);
+      })
+    })
+    sprites.pieces.src = 'images/enemy.png'
+
+    sprites.goal = new Image();
+    sprites.goal.addEventListener('load', ()=> {
+      ctx.drawImage(sprites.goal, goal.x, goal.y);
+    })
+    sprites.goal.src = 'images/chest.png'
+
   console.log('the sprites.player: ', sprites.player, ': the player x>',player.x)
   ctx.drawImage(sprites.background, 0, 0);
   ctx.drawImage(sprites.player, player.x, player.y);
@@ -125,17 +139,7 @@ let draw = () => {
   pieces.forEach((element) => {
     ctx.drawImage(sprites.pieces, element.x, element.y);
   })
-
-  //render all the content in the window 
-let render = (item) => {
-      ctx.drawImage(sprites.item, item.x, item.y)
-
-      //old code for while they were still just square colors color context - how to fill in the next item, 
-     // what color to paint
-     ctx.fillStyle = item.c;
-      //size and shape of what is getting painted on the canvas
-     ctx.fillRect(item.x, item.y, item.w, item.h);
-  }
+  
 }
 
 draw();
@@ -158,7 +162,7 @@ let update = () => {
   })
 
   player.moveHorizonal(); 
-  // player.moveVertical();
+  player.moveVertical();
   draw();
 }
 
@@ -179,5 +183,5 @@ let step = () => {
   //}
 }
 
-loadSprites();
+//loadSprites();
 step();
